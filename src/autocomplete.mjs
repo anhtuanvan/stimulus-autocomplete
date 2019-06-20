@@ -101,6 +101,8 @@ export default class extends Controller {
                 event.preventDefault()
               }
             }
+          } else {
+            if (!selected) event.preventDefault()
           }
         }
         break
