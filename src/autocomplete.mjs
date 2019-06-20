@@ -2,7 +2,7 @@ import { Controller } from 'stimulus'
 import debounce from 'lodash.debounce'
 
 export default class extends Controller {
-  static targets = [ 'input', 'hidden', 'results' ]
+  static targets = ['input', 'hidden', 'results']
 
   connect() {
     this.resultsTarget.hidden = true
@@ -87,9 +87,18 @@ export default class extends Controller {
       case 'Enter':
         {
           const selected = this.resultsTarget.querySelector('[aria-selected="true"]')
-          if (selected && !this.resultsTarget.hidden) {
-            this.commit(selected)
-            event.preventDefault()
+          if (!this.resultsTarget.hidden) {
+            if (selected) {
+              this.commit(selected)
+              event.preventDefault()
+            } else {
+              const item = this.sibling(true)
+              if (item) {
+                this.select(item)
+                this.commit(item)
+                event.preventDefault()
+              }
+            }
           }
         }
         break
@@ -114,7 +123,7 @@ export default class extends Controller {
     const value = selected.getAttribute('data-autocomplete-value') || textValue
     this.inputTarget.value = textValue
 
-    if ( this.hasHiddenTarget ) {
+    if (this.hasHiddenTarget) {
       this.hiddenTarget.value = value
     } else {
       this.inputTarget.value = value
@@ -137,7 +146,7 @@ export default class extends Controller {
 
   onResultsMouseDown() {
     this.mouseDown = true
-    this.resultsTarget.addEventListener('mouseup', () => (this.mouseDown = false), {once: true})
+    this.resultsTarget.addEventListener('mouseup', () => (this.mouseDown = false), { once: true })
   }
 
   onInputChange() {
@@ -193,7 +202,7 @@ export default class extends Controller {
     if (!this.resultsTarget.hidden) return
     this.resultsTarget.hidden = false
     this.element.setAttribute('aria-expanded', 'true')
-    this.element.dispatchEvent(new CustomEvent('toggle', {detail: {input: this.input, results: this.results}}))
+    this.element.dispatchEvent(new CustomEvent('toggle', { detail: { input: this.input, results: this.results } }))
   }
 
   close() {
@@ -201,7 +210,7 @@ export default class extends Controller {
     this.resultsTarget.hidden = true
     this.inputTarget.removeAttribute('aria-activedescendant')
     this.element.setAttribute('aria-expanded', 'false')
-    this.element.dispatchEvent(new CustomEvent('toggle', {detail: {input: this.input, results: this.results}}))
+    this.element.dispatchEvent(new CustomEvent('toggle', { detail: { input: this.input, results: this.results } }))
   }
 
   get src() {
@@ -210,7 +219,7 @@ export default class extends Controller {
 
   get minLength() {
     const minLength = this.data.get("min-length")
-    if ( !minLength ) {
+    if (!minLength) {
       return 0
     }
     return parseInt(minLength, 10)
