@@ -89,9 +89,18 @@ export default class extends Controller {
       case 'Enter':
         {
           const selected = this.resultsTarget.querySelector('[aria-selected="true"]')
-          if (selected && !this.resultsTarget.hidden) {
-            this.commit(selected)
-            event.preventDefault()
+          if (!this.resultsTarget.hidden) {
+            if (selected) {
+              this.commit(selected)
+              event.preventDefault()
+            } else {
+              const item = this.sibling(true)
+              if (item) {
+                this.select(item)
+                this.commit(item)
+                event.preventDefault()
+              }
+            }
           }
         }
         break
